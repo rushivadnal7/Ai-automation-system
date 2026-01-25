@@ -17,7 +17,7 @@ function Model({ modelPath }) {
     <primitive 
       ref={modelRef}
       object={scene} 
-      scale={4}
+      scale={3.7}
       position={[0, 0, 0]}
     />
   );

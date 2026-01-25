@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { nodeSchemas } from '../lib/nodeSchema';
 
-// Suggestion logic based on node types
 const getSuggestionsForNode = (nodeType, existingNodes) => {
     const suggestions = {
         customInput: ['text', 'llm', 'transform'],
@@ -17,7 +16,6 @@ const getSuggestionsForNode = (nodeType, existingNodes) => {
 
     const nodeSuggestions = suggestions[nodeType] || [];
 
-    // Filter out nodes that already exist in large quantities
     const nodeTypeCounts = existingNodes.reduce((acc, node) => {
         const type = node.data?.nodeType;
         acc[type] = (acc[type] || 0) + 1;

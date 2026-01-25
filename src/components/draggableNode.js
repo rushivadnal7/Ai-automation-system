@@ -12,7 +12,7 @@ export const  DraggableNode = ({ type, label }) => {
 
   return (
     <div
-      className={`${type} cursor-grab active:cursor-grabbing w-20 h-20 flex items-center justify-center flex-col gap-2 relative rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 transition-all duration-300 hover:bg-white/15 hover:border-white/30   group`}
+      className={`${type} cursor-grab active:cursor-grabbing w-20 h-20 flex items-center justify-center flex-col gap-2 relative rounded-full bg-white/5 backdrop-blur-xl border border-white/10 transition-all duration-300 hover:bg-white/15 hover:border-white/30   group`}
       onDragStart={(event) => onDragStart(event, type)}
       onDragEnd={(event) => (event.target.style.cursor = 'grab')}
       // style={{
@@ -21,7 +21,7 @@ export const  DraggableNode = ({ type, label }) => {
       draggable
     >
       <div 
-        className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-40 transition-opacity duration-300 blur-xl -z-10`}
+        className={`absolute inset-0 rounded-full opacity-0 group-hover:opacity-40 transition-opacity duration-300 blur-xl -z-10`}
         style={{ background: schema?.color || '#888' }}
       />
       
@@ -32,7 +32,7 @@ export const  DraggableNode = ({ type, label }) => {
           </svg>
         )}
       </div>
-      <span className="text-white text-sm font-normal  text-center">
+      <span className="text-white text-[12px] poppins-font font-  text-center">
         {label}
       </span>
     </div>

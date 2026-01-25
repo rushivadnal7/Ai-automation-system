@@ -7,8 +7,6 @@ export default function DynamicNode({ id, data }) {
   const { schema = {}, ...initialFields } = data || {};
   const [localData, setLocalData] = useState(initialFields || {});
   const updateNodeField = useStore((state) => state.updateNodeField);
-  const nodes = useStore((state) => state.nodes);
-  const edges = useStore((state) => state.edges);
   const isDynamic = schema.inputs?.dynamic;
   const sourceField = schema.inputs?.parseFrom;
   const pattern = schema.inputs?.pattern;
@@ -16,6 +14,7 @@ export default function DynamicNode({ id, data }) {
 
   const updateNodeInternals = useUpdateNodeInternals();
 
+  const deleteNode = useStore((state) => state.deleteNode);
 
   useEffect(() => {
     const defaults = {};
@@ -69,7 +68,7 @@ export default function DynamicNode({ id, data }) {
     updateNodeField(id, '__inputHandles', inputHandles);
     updateNodeField(id, '__handleIds', inputHandles.map(h => h.id).join(','));
 
-    updateNodeInternals(id); 
+    updateNodeInternals(id);
 
   }, [id, inputHandles, updateNodeField]);
 
@@ -82,9 +81,21 @@ export default function DynamicNode({ id, data }) {
   const getPosition = (p) => (typeof p === 'number' ? `${p}%` : '50%');
 
 
+  const handleDelete = (nodeId) => {
+    deleteNode(nodeId);
+  };
+
+
+
   return (
     <div className='flex '>
       <div className="relative w-[260px] p-4 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/18" style={{ boxShadow: `0 8px 32px 0 ${color}40, inset 0 0 20px rgba(255, 255, 255, 0.05)`, }}>
+
+        <div onClick={() => handleDelete(id)} className='absolute top-3 right-2 hover:scale-110 cursor-pointer transition-transform duration-200' title="Remove Node">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-5 text-gray-500 hover:text-red-300">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </div>
         <div
           className="absolute inset-0 rounded-2xl opacity-50 -z-10 pointer-events-none animate-pulse"
           style={{
@@ -102,6 +113,7 @@ export default function DynamicNode({ id, data }) {
             {schema.title || 'Node'}
           </span>
         </div>
+
 
         {schema.description && (
           <div className="text-[11px] mb-3 text-white/60 leading-snug">
@@ -124,26 +136,28 @@ export default function DynamicNode({ id, data }) {
           ))}
         </div>
 
-        {inputHandles.map((input, idx) => {
-          const handleId = input.id || `input-${idx}`;
+        {
+          inputHandles.map((input, idx) => {
+            const handleId = input.id || `input-${idx}`;
 
-          return (
-            <Handle
-              key={handleId}
-              type="target"
-              position={Position.Left}
-              id={handleId}
-              isConnectable={true}
-              className="w-3 h-3 bg-white border-2 cursor-crosshair z-10 transition-all duration-200 hover:scale-125"
-              style={{
-                top: getPosition(input.position),
-                borderColor: color,
-                left: '-6px',
-                boxShadow: `0 0 10px ${color}, 0 0 20px ${color}80`,
-              }}
-            />
-          );
-        })}
+            return (
+              <Handle
+                key={handleId}
+                type="target"
+                position={Position.Left}
+                id={handleId}
+                isConnectable={true}
+                className="w-3 h-3 bg-white border-2 cursor-crosshair z-10 transition-all duration-200 hover:scale-125"
+                style={{
+                  top: getPosition(input.position),
+                  borderColor: color,
+                  left: '-6px',
+                  boxShadow: `0 0 10px ${color}, 0 0 20px ${color}80`,
+                }}
+              />
+            );
+          })
+        }
 
         {(schema.outputs || []).map((output, idx) => {
           const handleId = output.id || `output-${idx}`;

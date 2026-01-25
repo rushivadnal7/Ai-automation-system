@@ -68,7 +68,7 @@ export const PipelineUI = () => {
         addNode(newNode);
       }
     },
-    [reactFlowInstance, getNodeID, addNode]  
+    [reactFlowInstance, getNodeID, addNode]
   );
 
   const onDragOver = useCallback((event) => {
@@ -95,6 +95,19 @@ export const PipelineUI = () => {
 
   return (
     <>
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-[400px] h-[400px] opacity-70"
+        >
+          <source src="/circular-gradient.mp4" type="video/mp4" />
+        </video>
+        <span className='text-white absolute bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm py-2 rounded-[10px] filter px-5s z-20'>VECTOR SHIFT</span>
+      </div>
+
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
         <div className="absolute top-[10%] left-[20%] w-[400px] h-[400px] rounded-full animate-float" style={{
           background: 'radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%)',
@@ -125,13 +138,31 @@ export const PipelineUI = () => {
           snapGrid={[gridSize, gridSize]}
           connectionLineType="smoothstep"
           defaultEdgeOptions={{
-            type: 'smoothstep',
+            type: 'smoothstep', 
             animated: true,
             style: {
               stroke: '#8b5cf6',
               strokeWidth: 2,
               filter: 'drop-shadow(0 0 6px #8b5cf6)',
             },
+            markerEnd: {
+              type: 'arrowclosed', 
+              color: '#8b5cf6',
+              width: 20,
+              height: 20,
+            },
+            // Add labels to edges
+            labelStyle: {
+              fill: '#fff',
+              fontWeight: 500,
+              fontSize: 12,
+            },
+            labelBgStyle: {
+              fill: 'rgba(139, 92, 246, 0.2)',
+              fillOpacity: 0.8,
+            },
+            labelBgPadding: [8, 4],
+            labelBgBorderRadius: 4,
           }}
         >
           <Background

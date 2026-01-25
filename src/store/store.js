@@ -11,22 +11,17 @@ export const useStore = create((set, get) => ({
   nodes: [],
   edges: [],
   nodeIDs: {},
-
-  // ✅ Fixed: This should be getNodeID (matching what's used in ui.js)
   getNodeID: (type) => {
     const state = get();
     const current = state.nodeIDs[type] ?? 0;
     const updated = current + 1;
 
-    // Update the counter
     set({
       nodeIDs: {
         ...state.nodeIDs,
         [type]: updated,
       },
     });
-
-    // Return the new ID
     return `${type}-${updated}`;
   },
 
@@ -77,6 +72,18 @@ export const useStore = create((set, get) => ({
         }
         return node;
       }),
+    });
+  },
+  deleteNode: (nodeId) => {
+    const state = get();
+
+    const updatedNodes = state.nodes.filter((node) => node.id !== nodeId);
+
+    const updatedEdges = state.edges.filter( (edge) => edge.source !== nodeId && edge.target !== nodeId);
+
+    set({
+      nodes: updatedNodes,
+      edges: updatedEdges,
     });
   },
 }));
