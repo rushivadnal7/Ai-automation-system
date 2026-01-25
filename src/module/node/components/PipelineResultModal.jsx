@@ -101,7 +101,7 @@ const PipelineResultModal = ({ isOpen, onClose, result }) => {
                                     </div>
                                     <span className="text-white/80 font-medium">Number of Nodes</span>
                                 </div>
-                                <span className="text-2xl font-bold text-white">{result.num_nodes}</span>
+                                <span className="text-2xl font-bold text-white">{result.data.num_nodes}</span>
                             </div>
 
                             <div className="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/10">
@@ -113,7 +113,7 @@ const PipelineResultModal = ({ isOpen, onClose, result }) => {
                                     </div>
                                     <span className="text-white/80 font-medium">Number of Edges</span>
                                 </div>
-                                <span className="text-2xl font-bold text-white">{result.num_edges}</span>
+                                <span className="text-2xl font-bold text-white">{result.data.num_edges}</span>
                             </div>
 
                             <div className="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/10">

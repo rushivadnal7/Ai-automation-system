@@ -11,9 +11,9 @@ export default function DynamicNode({ id, data }) {
   const sourceField = schema.inputs?.parseFrom;
   const pattern = schema.inputs?.pattern;
   const color = schema.color || '#888';
+  const executionResult = useStore((state) => state.executionResults[id]);
 
   const updateNodeInternals = useUpdateNodeInternals();
-
   const deleteNode = useStore((state) => state.deleteNode);
 
   useEffect(() => {
@@ -67,11 +67,8 @@ export default function DynamicNode({ id, data }) {
   useEffect(() => {
     updateNodeField(id, '__inputHandles', inputHandles);
     updateNodeField(id, '__handleIds', inputHandles.map(h => h.id).join(','));
-
     updateNodeInternals(id);
-
   }, [id, inputHandles, updateNodeField]);
-
 
   const handleChange = (fieldName, value) => {
     setLocalData((prev) => ({ ...prev, [fieldName]: value }));
@@ -80,22 +77,20 @@ export default function DynamicNode({ id, data }) {
 
   const getPosition = (p) => (typeof p === 'number' ? `${p}%` : '50%');
 
-
   const handleDelete = (nodeId) => {
     deleteNode(nodeId);
   };
 
-
-
   return (
-    <div className='flex '>
-      <div className="relative w-[260px] p-4 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/18" style={{ boxShadow: `0 8px 32px 0 ${color}40, inset 0 0 20px rgba(255, 255, 255, 0.05)`, }}>
+    <div className='flex'>
+      <div className="relative w-[260px] p-4 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/18" style={{ boxShadow: `0 8px 32px 0 ${color}40, inset 0 0 20px rgba(255, 255, 255, 0.05)` }}>
 
         <div onClick={() => handleDelete(id)} className='absolute top-3 right-2 hover:scale-110 cursor-pointer transition-transform duration-200' title="Remove Node">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-5 text-gray-500 hover:text-red-300">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
           </svg>
         </div>
+        
         <div
           className="absolute inset-0 rounded-2xl opacity-50 -z-10 pointer-events-none animate-pulse"
           style={{
@@ -113,7 +108,6 @@ export default function DynamicNode({ id, data }) {
             {schema.title || 'Node'}
           </span>
         </div>
-
 
         {schema.description && (
           <div className="text-[11px] mb-3 text-white/60 leading-snug">
@@ -136,56 +130,57 @@ export default function DynamicNode({ id, data }) {
           ))}
         </div>
 
-        {
-          inputHandles.map((input, idx) => {
-            const handleId = input.id || `input-${idx}`;
+        {executionResult && (
+          <div className="mt-3 p-2 rounded-lg bg-black/40 border border-white/10">
+            <div className="text-[10px] text-white/50 mb-1 font-medium">Result:</div>
+            <div className="text-xs text-white/90 max-h-24 overflow-auto break-words whitespace-pre-wrap">
+              {executionResult.length > 200 ? executionResult.substring(0, 200) + '...' : executionResult}
+            </div>
+          </div>
+        )}
 
-            return (
-              <Handle
-                key={handleId}
-                type="target"
-                position={Position.Left}
-                id={handleId}
-                isConnectable={true}
-                className="w-3 h-3 bg-white border-2 cursor-crosshair z-10 transition-all duration-200 hover:scale-125"
-                style={{
-                  top: getPosition(input.position),
-                  borderColor: color,
-                  left: '-6px',
-                  boxShadow: `0 0 10px ${color}, 0 0 20px ${color}80`,
-                }}
-              />
-            );
-          })
-        }
+        {inputHandles.map((input, idx) => {
+          const handleId = input.id || `input-${idx}`;
+
+          return (
+            <Handle
+              key={handleId}
+              type="target"
+              position={Position.Left}
+              id={handleId}
+              isConnectable={true}
+              className="w-3 h-3 bg-white border-2 cursor-crosshair z-10 transition-all duration-200 hover:scale-125"
+              style={{
+                top: getPosition(input.position),
+                borderColor: color,
+                left: '-6px',
+                boxShadow: `0 0 10px ${color}, 0 0 20px ${color}80`,
+              }}
+            />
+          );
+        })}
 
         {(schema.outputs || []).map((output, idx) => {
           const handleId = output.id || `output-${idx}`;
 
           return (
-            <>
-              <Handle
-                key={handleId}
-                type="source"
-                position={Position.Right}
-                id={handleId}
-                isConnectable={true}
-                className="w-3 h-3 bg-white border-2 cursor-crosshair z-10 transition-all duration-200 hover:scale-125"
-                style={{
-                  top: getPosition(output.position),
-                  borderColor: color,
-                  right: '-6px',
-                  boxShadow: `0 0 10px ${color}, 0 0 20px ${color}80`,
-                }}
-              />
-
-            </>
+            <Handle
+              key={handleId}
+              type="source"
+              position={Position.Right}
+              id={handleId}
+              isConnectable={true}
+              className="w-3 h-3 bg-white border-2 cursor-crosshair z-10 transition-all duration-200 hover:scale-125"
+              style={{
+                top: getPosition(output.position),
+                borderColor: color,
+                right: '-6px',
+                boxShadow: `0 0 10px ${color}, 0 0 20px ${color}80`,
+              }}
+            />
           );
         })}
       </div>
-
-      {/* <div className="relative  h-10 p-4 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/18" style={{ boxShadow: `0 8px 32px 0 ${color}40, inset 0 0 20px rgba(255, 255, 255, 0.05)`, }}> </div> */}
     </div>
-
   );
 }

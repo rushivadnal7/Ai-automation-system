@@ -1,4 +1,4 @@
-import { nodeSchemas } from "../lib/nodeSchema";
+import { nodeSchemas } from "../../node/lib/nodeSchema";
 
 export const fetchSuggestions = async ({
   selectedNode,
