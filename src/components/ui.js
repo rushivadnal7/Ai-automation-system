@@ -14,12 +14,10 @@ const nodeTypes = {
 const gridSize = 20;
 const proOptions = { hideAttribution: true };
 
-// ✅ Remove the selector - use direct store access instead
 export const PipelineUI = () => {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
-  // ✅ Access store values directly without a selector
   const nodes = useStore((state) => state.nodes);
   const edges = useStore((state) => state.edges);
   const getNodeID = useStore((state) => state.getNodeID);
@@ -105,7 +103,7 @@ export const PipelineUI = () => {
         >
           <source src="/circular-gradient.mp4" type="video/mp4" />
         </video>
-        <span className='text-white absolute bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm py-2 rounded-[10px] filter px-5s z-20'>VECTOR SHIFT</span>
+        <span className='text-white absolute yellowtail bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm py-2 rounded-[8px] filter px-3 text-[18px] font-semibold z-20 '>VECTOR SHIFT</span>
       </div>
 
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
@@ -151,7 +149,6 @@ export const PipelineUI = () => {
               width: 20,
               height: 20,
             },
-            // Add labels to edges
             labelStyle: {
               fill: '#fff',
               fontWeight: 500,
