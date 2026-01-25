@@ -1,4 +1,3 @@
-// store.js
 import { create } from "zustand";
 import {
   addEdge,
@@ -11,6 +10,10 @@ export const useStore = create((set, get) => ({
   nodes: [],
   edges: [],
   nodeIDs: {},
+  executionResults: {},
+  executionLogs: [],
+  isExecuting: false,
+  
   getNodeID: (type) => {
     const state = get();
     const current = state.nodeIDs[type] ?? 0;
@@ -74,16 +77,42 @@ export const useStore = create((set, get) => ({
       }),
     });
   },
+  
   deleteNode: (nodeId) => {
     const state = get();
-
     const updatedNodes = state.nodes.filter((node) => node.id !== nodeId);
-
-    const updatedEdges = state.edges.filter( (edge) => edge.source !== nodeId && edge.target !== nodeId);
+    const updatedEdges = state.edges.filter((edge) => edge.source !== nodeId && edge.target !== nodeId);
 
     set({
       nodes: updatedNodes,
       edges: updatedEdges,
     });
   },
+  
+  setExecutionResult: (nodeId, result) => {
+    set({
+      executionResults: {
+        ...get().executionResults,
+        [nodeId]: result
+      }
+    });
+  },
+  
+  addExecutionLog: (message) => {
+    const timestamp = new Date().toLocaleTimeString();
+    set({
+      executionLogs: [...get().executionLogs, { time: timestamp, message }]
+    });
+  },
+  
+  clearExecution: () => {
+    set({
+      executionResults: {},
+      executionLogs: []
+    });
+  },
+  
+  setIsExecuting: (value) => {
+    set({ isExecuting: value });
+  }
 }));
