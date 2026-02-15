@@ -1,5 +1,5 @@
 const createIcon = (path, color) => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className={`size-4 text-[${color}]`}>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className={`size-4 text-[${ color.length < 1 ? color : '#fff'}]`}>
     <path strokeLinecap="round" strokeLinejoin="round" d={path} />
   </svg>
 );

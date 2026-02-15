@@ -2,14 +2,12 @@ import { Handle, Position, useUpdateNodeInternals } from 'reactflow';
 import { useState, useEffect, useMemo } from 'react';
 import { useStore } from '../../../store/store';
 import { FieldRenderer } from './FieldRenderer';
+import { InputHandleGeneratorFactory } from '../../../strategies/InputHandleGenerator';
 
 export default function DynamicNode({ id, data }) {
   const { schema = {}, ...initialFields } = data || {};
   const [localData, setLocalData] = useState(initialFields || {});
   const updateNodeField = useStore((state) => state.updateNodeField);
-  const isDynamic = schema.inputs?.dynamic;
-  const sourceField = schema.inputs?.parseFrom;
-  const pattern = schema.inputs?.pattern;
   const color = schema.color || '#888';
   const executionResult = useStore((state) => state.executionResults[id]);
 
@@ -32,43 +30,16 @@ export default function DynamicNode({ id, data }) {
     }
   }, [id, schema]);
 
-  const dynamicInputs = useMemo(() => {
-    const inputs = [];
-
-    if (isDynamic && pattern && localData[sourceField]) {
-      const matches = [...localData[sourceField].matchAll(pattern)];
-      const uniqueVars = new Set();
-
-      matches.forEach((match) => {
-        const variable = match[1].trim().replace(/\s+/g, '_');
-        if (!uniqueVars.has(variable)) {
-          inputs.push({
-            id: variable,
-            position: undefined,
-          });
-          uniqueVars.add(variable);
-        }
-      });
-    }
-
-    return inputs.map((h, i, arr) => ({
-      ...h,
-      position: h.position ?? (100 / (arr.length + 1)) * (i + 1),
-    }));
-  }, [isDynamic, pattern, localData[sourceField]]);
-
   const inputHandles = useMemo(() => {
-    if (dynamicInputs.length > 0) {
-      return dynamicInputs;
-    }
-    return Array.isArray(schema.inputs) ? schema.inputs : [];
-  }, [dynamicInputs, schema.inputs]);
+    const generator = InputHandleGeneratorFactory.create(schema);
+    return generator.generate(schema, localData);
+  }, [schema, localData]);
 
   useEffect(() => {
     updateNodeField(id, '__inputHandles', inputHandles);
     updateNodeField(id, '__handleIds', inputHandles.map(h => h.id).join(','));
     updateNodeInternals(id);
-  }, [id, inputHandles, updateNodeField]);
+  }, [id, inputHandles, updateNodeField, updateNodeInternals]);
 
   const handleChange = (fieldName, value) => {
     setLocalData((prev) => ({ ...prev, [fieldName]: value }));
@@ -79,6 +50,13 @@ export default function DynamicNode({ id, data }) {
 
   const handleDelete = (nodeId) => {
     deleteNode(nodeId);
+  };
+
+  const formatResult = (result) => {
+    if (typeof result === 'object') {
+      return JSON.stringify(result, null, 2);
+    }
+    return String(result);
   };
 
   return (
@@ -134,7 +112,8 @@ export default function DynamicNode({ id, data }) {
           <div className="mt-3 p-2 rounded-lg bg-black/40 border border-white/10">
             <div className="text-[10px] text-white/50 mb-1 font-medium">Result:</div>
             <div className="text-xs text-white/90 max-h-24 overflow-auto break-words whitespace-pre-wrap">
-              {executionResult.length > 200 ? executionResult.substring(0, 200) + '...' : executionResult}
+              {formatResult(executionResult).substring(0, 200)}
+              {formatResult(executionResult).length > 200 ? '...' : ''}
             </div>
           </div>
         )}

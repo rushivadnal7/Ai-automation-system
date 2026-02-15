@@ -1,9 +1,9 @@
 // App.jsx
 import { ReactFlowProvider } from 'reactflow';
-import { PipelineToolbar } from './components/toolbar';
-import { PipelineUI } from './components/ui';
-import SubmitButton from './components/SubmitButton';
-import { ThreeBackground } from './components/Model';
+import { PipelineToolbar } from '../components/toolbar';
+import { PipelineUI } from '../components/ui';
+import SubmitButton from '../components/SubmitButton';
+import { ThreeBackground } from '../components/Model';
 
 function App() {
   return (

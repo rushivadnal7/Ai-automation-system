@@ -6,6 +6,7 @@ import DynamicNode from '../module/node/components/DynamicNode';
 import { nodeSchemas } from '../module/node/lib/nodeSchema';
 import { NodeSuggestions } from '../module/aiSuggestions/components/NodeSugestion';
 import { executePipeline } from '../module/node/utils/executePipeline';
+import { RunPipelineButton } from './RunPipelinebutton';
 
 const nodeTypes = {
   dynamic: DynamicNode,
@@ -126,7 +127,7 @@ export const PipelineUI = () => {
           loop
           muted
           playsInline
-          className="w-[400px] h-[400px] opacity-70"
+          className="w-[400px] h-[400px] opacity-30"
         >
           <source src="/circular-gradient.mp4" type="video/mp4" />
         </video>
@@ -149,28 +150,7 @@ export const PipelineUI = () => {
       </div>
 
       <div className="absolute top-4 right-4 z-30 flex gap-2">
-        <button
-          onClick={handleExecute}
-          disabled={isExecuting || nodes.length === 0}
-          className="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-medium hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2"
-        >
-          {isExecuting ? (
-            <>
-              <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              Running...
-            </>
-          ) : (
-            <>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
-              </svg>
-              Run Pipeline
-            </>
-          )}
-        </button>
+        <RunPipelineButton onClick={handleExecute} isExecuting={isExecuting} disabled={nodes.length === 0} />
         
         {executionLogs.length > 0 && (
           <button
